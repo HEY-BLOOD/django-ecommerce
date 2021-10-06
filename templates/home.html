@@ -53,10 +53,10 @@
       <!--Section: Products v.3-->
       <section class="text-center mb-4">
 
-        <div class="row wow fadeIn">
+        <div class="masonry-container row wow fadeIn">
 
           {% for item in object_list %}
-          <div class="col-lg-3 col-md-6 mb-4">
+          <div class="masonry-item col-lg-3 col-md-6 mb-4">
 
             <div class="card">
 
@@ -140,3 +140,13 @@
 {% endblock content %}
 
 
+{% block extra_scripts %}
+<!-- init Masonry Layout -->
+<script src="https://cdn.bootcdn.net/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+<script>
+  $('.masonry-container').masonry({
+    // options
+    itemSelector: '.masonry-item'
+  });
+</script>
+{% endblock extra_scripts %}
