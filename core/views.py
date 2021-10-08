@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.views.generic import ListView, DetailView, View
 
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
+from .models import Category, Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -347,8 +347,26 @@ class PaymentView(View):
 
 class HomeView(ListView):
     model = Item
-    paginate_by = 10
+    paginate_by = 20
     template_name = "home.html"
+
+    def get_queryset(self):
+        object_list = self.model.objects.all()
+        category_name = self.request.GET.get('category')
+        # Specific category product items
+        if category_name:
+            category_obj = Category.objects.get(name=category_name)
+            object_list = self.model.objects.filter(category=category_obj)
+        return object_list
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the categorys
+        context['category_list'] = Category.objects.all()
+        # Current category
+        context['current_category_name'] = self.request.GET.get('category')
+        return context
 
 
 class OrderSummaryView(LoginRequiredMixin, View):

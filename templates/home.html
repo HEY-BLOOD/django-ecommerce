@@ -21,20 +21,27 @@
 
           <!-- Links -->
           <ul class="navbar-nav mr-auto">
+
+
+            {% if current_category_name is None%}
             <li class="nav-item active">
-              <a class="nav-link" href="#">All
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
+              {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="#">Shirts</a>
+              {% endif %}
+              <a class="nav-link" href="/">All</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Sport wears</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Outwears</a>
-            </li>
+
+            {% for category in category_list %}
+              {% if category.name == current_category_name %}
+              <li class="nav-item active">
+                {% else %}
+              <li class="nav-item">
+                {% endif %}
+                <a class="nav-link" href="?category={{ category.name }}">
+                  {{ category.name }}
+                </a>
+              </li>
+            {% endfor %}
 
           </ul>
           <!-- Links -->
@@ -61,7 +68,6 @@
             <div class="card">
 
               <div class="view overlay">
-                {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}
                 <img src="{{ item.image.url }}" class="card-img-top">
                 <a href="{{ item.get_absolute_url }}">
                   <div class="mask rgba-white-slight"></div>
@@ -69,8 +75,8 @@
               </div>
 
               <div class="card-body text-center">
-                <a href="" class="grey-text">
-                  <h5>{{ item.get_category_display }}</h5>
+                <a href="?category={{ item.category.name }}" class="grey-text">
+                  <h5>{{ item.category.name }}</h5>
                 </a>
                 <h5>
                   <strong>
