@@ -1,9 +1,11 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum
+from django.dispatch import receiver
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
+
+from djecommerce.utils import unique_slugify
 
 
 LABEL_CHOICES = (
@@ -41,7 +43,7 @@ class Item(models.Model):
     discount_price = models.FloatField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True, blank=True, null=True)
     description = models.TextField()
     image = models.ImageField()
 
@@ -184,4 +186,9 @@ def userprofile_receiver(sender, instance, created, *args, **kwargs):
         userprofile = UserProfile.objects.create(user=instance)
 
 
+def item_slug_receiver(sender, instance, **kwargs):
+    instance.slug = unique_slugify(instance, instance.title)
+
+
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
+pre_save.connect(item_slug_receiver, sender=Item)
