@@ -358,10 +358,10 @@ class HomeView(ListView):
         if current_title:
             object_list = object_list.filter(title__icontains=current_title)
 
-        # Specific category product items
-        category_name = self.request.GET.get('category')
-        if category_name:
-            category_obj = Category.objects.get(name=category_name)
+        # Filter specific category of product items
+        current_category_name = self.request.GET.get('category')
+        if current_category_name:
+            category_obj = Category.objects.get(name=current_category_name)
             object_list = object_list.filter(category=category_obj)
         return object_list
 
@@ -370,8 +370,6 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the categorys
         context['category_list'] = Category.objects.all()
-        # Current category
-        context['current_category_name'] = self.request.GET.get('category')
         return context
 
 

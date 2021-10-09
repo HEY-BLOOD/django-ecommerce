@@ -32,7 +32,7 @@
             </li>
 
             {% for category in category_list %}
-              {% if category.name == current_category_name %}
+              {% if category.name == request.GET.category %}
               <li class="nav-item active">
                 {% else %}
               <li class="nav-item">
