@@ -7,7 +7,10 @@ django-allauth==0.39.1
 django-countries==5.3.3
 django-crispy-forms==1.7.2
 django-debug-toolbar==1.10.1
+django-mdeditor==0.1.18
 idna==2.8
+importlib-metadata==4.8.1
+Markdown==3.3.4
 oauthlib==3.0.1
 pep8==1.7.1
 Pillow==6.2.2
@@ -19,4 +22,8 @@ requests==2.21.0
 requests-oauthlib==1.2.0
 sqlparse==0.2.4
 stripe==2.27.0
+typing-extensions==3.10.0.2
 urllib3==1.24.2
+wincertstore==0.2
+yapf==0.31.0
+zipp==3.6.0

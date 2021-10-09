@@ -5,7 +5,9 @@ from django.dispatch import receiver
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
 
-from djecommerce.utils import unique_slugify
+from mdeditor.fields import MDTextField
+
+from djecommerce.utils import unique_slugify, md_to_html
 
 
 LABEL_CHOICES = (
@@ -46,6 +48,8 @@ class Item(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
     description = models.TextField()
     image = models.ImageField()
+    md_content = MDTextField(blank=True, null=True)
+    html_content = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -67,8 +71,7 @@ class Item(models.Model):
 
 
 class OrderItem(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
@@ -92,8 +95,7 @@ class OrderItem(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
@@ -190,5 +192,10 @@ def item_slug_receiver(sender, instance, **kwargs):
     instance.slug = unique_slugify(instance, instance.title)
 
 
+def item_content_receiver(sender, instance, **kwargs):
+    instance.html_content = md_to_html(instance.md_content)
+
+
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
 pre_save.connect(item_slug_receiver, sender=Item)
+pre_save.connect(item_content_receiver, sender=Item)

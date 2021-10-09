@@ -5,6 +5,10 @@
   "python.linting.pylintArgs": ["--load-plugins", "pylint_django"],
   "python.linting.pylintEnabled": true,
   "python.linting.pycodestyleArgs": ["--ignore=E501"],
+  "python.formatting.provider": "yapf", // or "black" here
+  "python.formatting.yapfArgs": [
+      "--style={based_on_style: pep8, column_limit: 120, indent_width: 4}"
+  ],
   "files.exclude": {
     "**/*.pyc": true
   }
