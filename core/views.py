@@ -352,11 +352,17 @@ class HomeView(ListView):
 
     def get_queryset(self):
         object_list = self.model.objects.all()
-        category_name = self.request.GET.get('category')
+
+        # Search a product item
+        current_title = self.request.GET.get('search')
+        if current_title:
+            object_list = object_list.filter(title__icontains=current_title)
+
         # Specific category product items
+        category_name = self.request.GET.get('category')
         if category_name:
             category_obj = Category.objects.get(name=category_name)
-            object_list = self.model.objects.filter(category=category_obj)
+            object_list = object_list.filter(category=category_obj)
         return object_list
 
     def get_context_data(self, **kwargs):
