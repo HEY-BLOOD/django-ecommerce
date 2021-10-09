@@ -51,6 +51,10 @@ class Item(models.Model):
     md_content = MDTextField(blank=True, null=True)
     html_content = models.TextField(blank=True, null=True)
 
+    def delete(self, *args, **kwargs):
+        self.image.delete()
+        super(self.__class__, self).delete(*args, **kwargs)
+
     def __str__(self):
         return self.title
 
